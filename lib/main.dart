@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'dart:typed_data';
+import 'screens/home/home.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -25,14 +25,14 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.grey,
       ),
-      home: const MyHomePage(title: 'Cosinuss° One - Demo'),
+      home: const HomeScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+/*class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -323,5 +323,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
        ),
     );
-  }
+ }
 }
+*/
