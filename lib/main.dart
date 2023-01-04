@@ -4,7 +4,6 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'dart:typed_data';
 import 'screens/home/home.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -61,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void updateHeartRate(rawData) {
     Uint8List bytes = Uint8List.fromList(rawData);
-    
+
     // based on GATT standard
     var bpm = bytes[1];
     if (!((bytes[0] & 0x01) == 0)) {
@@ -94,17 +93,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void updatePPGRaw(rawData) {
     Uint8List bytes = Uint8List.fromList(rawData);
-    
+
     // corresponds to the raw reading of the PPG sensor from which the heart rate is computed
-    // 
-    // example plot https://e2e.ti.com/cfs-file/__key/communityserver-discussions-components-files/73/Screen-Shot-2019_2D00_01_2D00_24-at-19.30.24.png 
+    //
+    // example plot https://e2e.ti.com/cfs-file/__key/communityserver-discussions-components-files/73/Screen-Shot-2019_2D00_01_2D00_24-at-19.30.24.png
     // (image just for illustration purpose, obtained from a different sensor! Sensor value range differs.)
 
     var ppg_red = bytes[0] | bytes[1] << 8 | bytes[2] << 16 | bytes[3] << 32; // raw green color value of PPG sensor
     var ppg_green = bytes[4] | bytes[5] << 8 | bytes[6] << 16 | bytes[7] << 32; // raw red color value of PPG sensor
 
     var ppg_green_ambient = bytes[8] | bytes[9] << 8 | bytes[10] << 16 | bytes[11] << 32; // ambient light sensor (e.g., if sensor is not placed correctly)
-  
+
     setState(() {
       _ppgGreen = ppg_red.toString() + " (unknown unit)";
       _ppgRed = ppg_green.toString() + " (unknown unit)";
@@ -137,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _connect() {
     FlutterBlue flutterBlue = FlutterBlue.instance;
-    
+
     // start scanning
     flutterBlue.startScan(timeout: Duration(seconds: 4));
 
@@ -196,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
             };
           };
         }
-        
+
       }
     });
   }
@@ -232,7 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(children: [
               const Text(
                 'Heart Rate: '
-              ), 
+              ),
               Text(
                 '$_heartRate'
               ),
@@ -240,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(children: [
               const Text(
                 'Body Temperature: '
-              ), 
+              ),
               Text(
                 '$_bodyTemperature'
               ),
@@ -248,7 +247,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(children: [
               const Text(
                 'Accelerometer X: '
-              ), 
+              ),
               Text(
                 '$_accX'
               ),
@@ -256,7 +255,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(children: [
               const Text(
                 'Accelerometer Y: '
-              ), 
+              ),
               Text(
                 '$_accY'
               ),
@@ -264,7 +263,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(children: [
               const Text(
                 'Accelerometer Z: '
-              ), 
+              ),
               Text(
                 '$_accZ'
               ),
@@ -272,7 +271,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(children: [
               const Text(
                 'PPG Raw Red: '
-              ), 
+              ),
               Text(
                 '$_ppgRed'
               ),
@@ -280,7 +279,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(children: [
               const Text(
                 'PPG Raw Green: '
-              ), 
+              ),
               Text(
                 '$_ppgGreen'
               ),
@@ -288,7 +287,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(children: [
               const Text(
                 'PPG Ambient: '
-              ), 
+              ),
               Text(
                 '$_ppgAmbient'
               ),
@@ -307,7 +306,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         ),
       ),
-      floatingActionButton: Visibility(visible: !_isConnected, 
+      floatingActionButton: Visibility(visible: !_isConnected,
         child: FloatingActionButton(
           onPressed: _connect,
           tooltip: 'Increment',

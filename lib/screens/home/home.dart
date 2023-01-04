@@ -1,14 +1,11 @@
-
 import 'package:cosinuss/screens/history/history.dart';
 import 'package:cosinuss/screens/settings/settings.dart';
 import 'package:cosinuss/screens/training/training.dart';
 import 'package:flutter/material.dart';
 import './widgets/task_button.dart';
 
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
 
   final Map<String, Widget> _screens = const {
     "training": Training(),
@@ -17,9 +14,10 @@ class HomeScreen extends StatelessWidget {
   };
 
   List<Widget> _buildButtons() {
-    return _screens.entries.map((e) => TaskButton(name: e.key, page: e.value)).toList();
+    return _screens.entries
+        .map((e) => TaskButton(name: e.key, page: e.value))
+        .toList();
   }
-
 
   @override
   Widget build(BuildContext context) {
