@@ -21,8 +21,6 @@ class _ExerciseTextFieldState extends State<ExerciseTextField> {
     widget.onFinish(newExercise);
     Navigator.of(context).pop();
   }
-
-
   @override
   Widget build(BuildContext context) {
     return Padding(

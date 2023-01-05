@@ -39,6 +39,7 @@ class _TrainingState extends State<Training> {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
+        backgroundColor: Colors.blue,
         onPressed: () {
           _enterExerciseName(context);
         },
