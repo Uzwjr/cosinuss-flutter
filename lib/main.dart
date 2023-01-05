@@ -1,7 +1,4 @@
-import 'package:cosinuss/dimensions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
-import 'dart:typed_data';
 import 'screens/home/home.dart';
 
 void main() {

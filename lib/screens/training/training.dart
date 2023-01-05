@@ -54,8 +54,8 @@ class _TrainingState extends State<Training> {
     Dimensions(context);
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: BorderedText(
+        titleSpacing: Dimensions.boxWidth * 22,
+        title: BorderedText(
             //strokeColor: Colors.lightBlue,
               child: Text(
                 "Training",
@@ -65,7 +65,6 @@ class _TrainingState extends State<Training> {
                 ),
                 textAlign: TextAlign.end,
               )),
-        ),
       ),
       body: ListView.builder(
         itemCount: exercises.length,

@@ -17,10 +17,10 @@ class ExerciseListTile extends StatelessWidget {
   get onPressed => null;
 
   double _nameLengthSize(String name) {
-    if (name.length > 9) {
-      return 7.5 / ((name.length) * 0.1);
+    if (name.length > 12) {
+      return 6.5 / ((name.length) * 0.1);
     }
-    return 7.5;
+    return 6.5;
   }
 
   @override
