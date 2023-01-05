@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import '../../../dimensions.dart';
 
 class ExerciseListTile extends StatelessWidget {
-  const ExerciseListTile({Key? key, required this.exercise}) : super(key: key);
+  const ExerciseListTile(
+      {Key? key, required this.exercise, required this.onLongPress})
+      : super(key: key);
 
   final Exercise exercise;
+  final void Function(int id) onLongPress;
 
   get child => null;
 
@@ -20,22 +23,28 @@ class ExerciseListTile extends StatelessWidget {
     return 7.5;
   }
 
-
   @override
   Widget build(BuildContext context) {
     Dimensions(context);
     return Card(
       color: Colors.black26,
       child: ElevatedButton(
+          onLongPress: () {
+            onLongPress(exercise.id);
+          },
           onPressed: onPressed,
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             BorderedText(
                 child: Text(exercise.name,
                     style: TextStyle(
-                        fontSize: Dimensions.boxHeight * _nameLengthSize(exercise.name),
+                        fontSize: Dimensions.boxHeight *
+                            _nameLengthSize(exercise.name),
                         //fontWeight: FontWeight.bold,
-                        color: Colors.white))),
-          ])),
+                        color: Colors.white)
+                )
+            ),
+          ])
+      ),
     );
   }
 }

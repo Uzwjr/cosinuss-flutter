@@ -1,6 +1,9 @@
+import 'package:bordered_text/bordered_text.dart';
+import 'package:cosinuss/screens/training/widgets/exercise_alertdialog.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_listtile.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_textfield.dart';
 import 'package:flutter/material.dart';
+import '../../dimensions.dart';
 import 'models/exercise.dart';
 
 class Training extends StatefulWidget {
@@ -19,6 +22,24 @@ class _TrainingState extends State<Training> {
     });
   }
 
+  void _removeExercise(int id) {
+    int index = exercises.indexWhere((exercise) => exercise.id == id);
+    if (index != -1) {
+      setState(() {
+        exercises.removeAt(index);
+      });
+    }
+  }
+
+  void _askIfDelete(int id) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return ExerciseAlertDialog(onPressed: _removeExercise, id: id);
+        }
+    );
+  }
+
   void _enterExerciseName(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -30,11 +51,26 @@ class _TrainingState extends State<Training> {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Center(
+          child: BorderedText(
+            //strokeColor: Colors.lightBlue,
+              child: Text(
+                "Training",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: Dimensions.boxWidth * 7.5,
+                ),
+                textAlign: TextAlign.end,
+              )),
+        ),
+      ),
       body: ListView.builder(
         itemCount: exercises.length,
         itemBuilder: (context, index) {
-          return ExerciseListTile(exercise: exercises[index]);
+          return ExerciseListTile(exercise: exercises[index], onLongPress: _askIfDelete);
         },
       ),
       floatingActionButton: FloatingActionButton(

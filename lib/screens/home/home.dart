@@ -1,3 +1,5 @@
+import 'package:bordered_text/bordered_text.dart';
+import 'package:cosinuss/dimensions.dart';
 import 'package:cosinuss/screens/history/history.dart';
 import 'package:cosinuss/screens/settings/settings.dart';
 import 'package:cosinuss/screens/training/training.dart';
@@ -21,9 +23,21 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cosinuss training"),
+        title: Center(
+          child: BorderedText(
+            //strokeColor: Colors.lightBlue,
+              child: Text(
+            "Cosinuss Workout",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: Dimensions.boxWidth * 9,
+            ),
+            textAlign: TextAlign.end,
+          )),
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(
