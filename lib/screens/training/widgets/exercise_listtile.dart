@@ -1,4 +1,5 @@
 import 'package:bordered_text/bordered_text.dart';
+import 'package:cosinuss/screens/recording/recording.dart';
 import 'package:cosinuss/screens/training/models/exercise.dart';
 import 'package:flutter/material.dart';
 
@@ -11,11 +12,6 @@ class ExerciseListTile extends StatelessWidget {
 
   final Exercise exercise;
   final void Function(int id) onLongPress;
-
-  get child => null;
-
-  get onPressed => null;
-
   double _nameLengthSize(String name) {
     if (name.length > 12) {
       return 6.5 / ((name.length) * 0.1);
@@ -32,7 +28,11 @@ class ExerciseListTile extends StatelessWidget {
           onLongPress: () {
             onLongPress(exercise.id);
           },
-          onPressed: onPressed,
+          onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Recording(name: exercise.name),
+                ),
+              ),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             BorderedText(
                 child: Text(exercise.name,
@@ -40,11 +40,8 @@ class ExerciseListTile extends StatelessWidget {
                         fontSize: Dimensions.boxHeight *
                             _nameLengthSize(exercise.name),
                         //fontWeight: FontWeight.bold,
-                        color: Colors.white)
-                )
-            ),
-          ])
-      ),
+                        color: Colors.white))),
+          ])),
     );
   }
 }

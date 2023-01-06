@@ -122,7 +122,6 @@ class _MyHomePageState extends State<MyHomePage> {
       _accZ = acc_z.toString() + " (unknown unit)";
     });
   }
-
   int twosComplimentOfNegativeMantissa(int mantissa) {
     if ((4194304 & mantissa) != 0) {
       return (((mantissa ^ -1) & 16777215) + 1) * -1;
