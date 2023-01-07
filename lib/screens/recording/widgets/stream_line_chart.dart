@@ -20,20 +20,20 @@ class StreamLineChart extends StatelessWidget {
   List<LineChartBarData> _eventValuesToLineBarsData(List<RecordingValue> eventValues) {
     List<List<FlSpot>> spots = [];
 
-    for (var _ in eventValues[0].values) {
+    //for (var _ in eventValues[0].value) {
       spots.add([]);
-    }
+   // }
+
     for (var event in eventValues) {
-      for (int i = 0; i < event.values.length; i++) {
-        spots[i].add(FlSpot(event.timeStamp.millisecondsSinceEpoch.toDouble(), event.values[i]));
+     // for (int i = 0; i < event.value.length; i++) {
+        spots[0].add(FlSpot(event.timeStamp.millisecondsSinceEpoch.toDouble(), event.value));
       }
-    }
+   // }
     List<LineChartBarData> lineBarsData = [];
     spots.map((e) => LineChartBarData(spots: e, dotData: FlDotData(show: false))).toList();
     for (var i = 0; i < spots.length; i++) {
       lineBarsData.add(LineChartBarData(
         spots: spots[i],
-        //colors: i < _colors.length ? [_colors[i]] : null,
         color: Colors.blue,
         dotData: FlDotData(show: false),
       ));
@@ -48,6 +48,7 @@ class StreamLineChart extends StatelessWidget {
     double latestTimeStampInMilliSec = eventValues.last.timeStamp.millisecondsSinceEpoch.toDouble();
     return LineChart(
       LineChartData(
+        clipData: FlClipData.all(),
         titlesData: FlTitlesData(
         //    bottomTitles: SideTitles(showTitles: false), topTitles: SideTitles(showTitles: false)
         ),
@@ -58,7 +59,7 @@ class StreamLineChart extends StatelessWidget {
         maxY: maxY,
         minY: minY,
       ),
-      swapAnimationDuration: const Duration(seconds: 0),
+      swapAnimationDuration: const Duration(seconds: 1),
     );
   }
 }

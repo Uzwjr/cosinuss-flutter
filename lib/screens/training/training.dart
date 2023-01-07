@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:bordered_text/bordered_text.dart';
+import 'package:cosinuss/BluetoothHandler.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_alertdialog.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_listtile.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_textfield.dart';
@@ -15,6 +19,11 @@ class Training extends StatefulWidget {
 
 class _TrainingState extends State<Training> {
   List<Exercise> exercises = [];
+  bool _isConnected = false;
+  final BluetoothHandler _bluetoothHandler = BluetoothHandler(_update);
+  final _heartBeatController = StreamController<double>.broadcast();
+  final _temperatureController = StreamController<double>.broadcast();
+
 
   void _addExercise(Exercise newExercise) {
     setState(() {
@@ -36,8 +45,7 @@ class _TrainingState extends State<Training> {
         context: context,
         builder: (context) {
           return ExerciseAlertDialog(onPressed: _removeExercise, id: id);
-        }
-    );
+        });
   }
 
   void _enterExerciseName(BuildContext context) {
@@ -49,35 +57,85 @@ class _TrainingState extends State<Training> {
     );
   }
 
+  void _connectToBluetooth() {
+    _bluetoothHandler.connect;
+    setState(() {
+      _isConnected = _bluetoothHandler.isConnected;
+    });
+  }
+
+  static _update() {
+  }
+
+  Stream<double> get heartBeatStream => _heartBeatController.stream;
+  Stream<double> get temperatureStream => _temperatureController.stream;
+
+  void _numberCreator() {
+    double countA = 100;
+    double countB = 35;
+    Timer.periodic(Duration(seconds: 2), (t) {
+      _heartBeatController.sink.add(countA);
+      _temperatureController.sink.add(countB);
+      bool random = Random().nextBool();
+      if(random) {
+        countA++;
+        countB++;
+      }
+      else {
+        countA--;
+        countB--;
+      }
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    _numberCreator();
     Dimensions(context);
     return Scaffold(
       appBar: AppBar(
         titleSpacing: Dimensions.boxWidth * 22,
         title: BorderedText(
             //strokeColor: Colors.lightBlue,
-              child: Text(
-                "Training",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: Dimensions.boxWidth * 7.5,
-                ),
-                textAlign: TextAlign.end,
-              )),
+            child: Text(
+          "Training",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: Dimensions.boxWidth * 7.5,
+          ),
+          textAlign: TextAlign.end,
+        )),
       ),
       body: ListView.builder(
         itemCount: exercises.length,
         itemBuilder: (context, index) {
-          return ExerciseListTile(exercise: exercises[index], onLongPress: _askIfDelete);
+          return ExerciseListTile(
+              exercise: exercises[index], onLongPress: _askIfDelete, heartBeatStream: heartBeatStream, temperatureStream: temperatureStream,);
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        backgroundColor: Colors.blue,
-        onPressed: () {
-          _enterExerciseName(context);
-        },
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            FloatingActionButton(
+              child: const Icon(Icons.bluetooth),
+              backgroundColor: _isConnected ? Colors.blue : Colors.grey,
+              onPressed: () {
+                _connectToBluetooth();
+              },
+            ),
+            FloatingActionButton(
+              child: const Icon(Icons.add),
+              backgroundColor: Colors.blue,
+              onPressed: () {
+                _enterExerciseName(context);
+              },
+            )
+          ],
+        ),
       ),
     );
   }

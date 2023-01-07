@@ -1,5 +1,5 @@
 class RecordingValue {
-  RecordingValue(this.values, this.timeStamp);
-  List<double> values;
+  RecordingValue(this.value, this.timeStamp);
+  double value;
   DateTime timeStamp;
 }

@@ -7,11 +7,15 @@ import '../../../dimensions.dart';
 
 class ExerciseListTile extends StatelessWidget {
   const ExerciseListTile(
-      {Key? key, required this.exercise, required this.onLongPress})
+      {Key? key, required this.exercise, required this.onLongPress, required this.heartBeatStream, required this.temperatureStream})
       : super(key: key);
 
   final Exercise exercise;
   final void Function(int id) onLongPress;
+  final Stream<double> heartBeatStream;
+  final Stream<double> temperatureStream;
+
+
   double _nameLengthSize(String name) {
     if (name.length > 12) {
       return 6.5 / ((name.length) * 0.1);
@@ -30,7 +34,7 @@ class ExerciseListTile extends StatelessWidget {
           },
           onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => Recording(name: exercise.name),
+                  builder: (context) => Recording(name: exercise.name, heartBeatStream: heartBeatStream, temperatureStream: temperatureStream),
                 ),
               ),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [

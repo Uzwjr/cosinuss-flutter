@@ -2,25 +2,27 @@ import 'package:bordered_text/bordered_text.dart';
 import 'package:cosinuss/dimensions.dart';
 import 'package:cosinuss/screens/recording/widgets/recording_bodytemperature.dart';
 import 'package:cosinuss/screens/recording/widgets/recording_heartrate.dart';
-import 'package:esense_flutter/esense.dart';
 import 'package:flutter/material.dart';
 
 class Recording extends StatefulWidget {
-  const Recording({Key? key, required this.name}) : super(key: key);
+  const Recording(
+      {Key? key,
+      required this.name,
+      required this.heartBeatStream,
+      required this.temperatureStream})
+      : super(key: key);
 
   final String name;
+  final Stream<double> heartBeatStream;
+  final Stream<double> temperatureStream;
 
   @override
   State<StatefulWidget> createState() => _RecodingState();
 }
 
-
-
-
 class _RecodingState extends State<Recording> {
-
-  List<double> _handleHeartRate(SensorEvent event) {
-      return [0.0, 0.0, 0.0];
+  List<double> _handleHeartRate() {
+    return [0.0];
   }
 
   @override
@@ -45,16 +47,21 @@ class _RecodingState extends State<Recording> {
             Dimensions.screenOrientation ? Axis.horizontal : Axis.vertical,
         children: [
           Expanded(
-              child: RecordingHeartRate<SensorEvent>(
-                stream: ESenseManager("meh").sensorEvents,
-                handler: _handleHeartRate,
-                timeRange: Duration(seconds: 10),
-                minValue: -20000.0,
-                maxValue: 20000.0,
-              )
-          ),
-          Expanded(child: RecordingBodyTemperature()
-          ),
+              child: RecordingHeartRate(
+            // handler: _handleHeartRate,
+            stream: widget.heartBeatStream,
+            timeRange: const Duration(seconds: 10),
+            minValue: 60.0,
+            maxValue: 200.0,
+          )),
+          Expanded(
+              child: RecordingHeartRate(
+            // handler: _handleHeartRate,
+            stream: widget.temperatureStream,
+            timeRange: const Duration(seconds: 10),
+            minValue: 30.0,
+            maxValue: 40.0,
+          )),
         ],
       ),
     );
