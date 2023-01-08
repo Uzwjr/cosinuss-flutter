@@ -1,6 +1,7 @@
 import 'package:bordered_text/bordered_text.dart';
 import 'package:cosinuss/dimensions.dart';
 import 'package:cosinuss/screens/recording/widgets/recording_bodytemperature.dart';
+import 'package:cosinuss/screens/recording/widgets/recording_button.dart';
 import 'package:cosinuss/screens/recording/widgets/recording_heartrate.dart';
 import 'package:flutter/material.dart';
 
@@ -21,8 +22,10 @@ class Recording extends StatefulWidget {
 }
 
 class _RecodingState extends State<Recording> {
-  List<double> _handleHeartRate() {
-    return [0.0];
+  void _onPressed(bool isStarted) {
+    if (!isStarted) {
+
+    }
   }
 
   @override
@@ -55,14 +58,24 @@ class _RecodingState extends State<Recording> {
             maxValue: 200.0,
           )),
           Expanded(
+            child : Padding(
+              padding: EdgeInsets.only(bottom: Dimensions.boxHeight * 8),
               child: RecordingHeartRate(
             // handler: _handleHeartRate,
             stream: widget.temperatureStream,
             timeRange: const Duration(seconds: 10),
             minValue: 30.0,
             maxValue: 40.0,
+              ),
           )),
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: RecordingButton(
+        isStarted: false,
+        onPressed: (isStarted) {
+          _onPressed;
+        },
       ),
     );
   }

@@ -25,8 +25,11 @@ class StreamLineChart extends StatelessWidget {
    // }
 
     for (var event in eventValues) {
-     // for (int i = 0; i < event.value.length; i++) {
-        spots[0].add(FlSpot(event.timeStamp.millisecondsSinceEpoch.toDouble(), event.value));
+       DateTime now = DateTime.now();
+       var diff = DateTime.now().difference(now).inSeconds;
+
+       // for (int i = 0; i < event.value.length; i++) {
+        spots[0].add(FlSpot(diff.toDouble(), event.value));
       }
    // }
     List<LineChartBarData> lineBarsData = [];
@@ -35,7 +38,7 @@ class StreamLineChart extends StatelessWidget {
       lineBarsData.add(LineChartBarData(
         spots: spots[i],
         color: Colors.blue,
-        dotData: FlDotData(show: false),
+        dotData: FlDotData(show: true),
       ));
     }
     return lineBarsData;
@@ -45,7 +48,7 @@ class StreamLineChart extends StatelessWidget {
   Widget build(BuildContext context) {
     if (eventValues.isEmpty) return const Center(child: Text("Waiting for first event..."));
 
-    double latestTimeStampInMilliSec = eventValues.last.timeStamp.millisecondsSinceEpoch.toDouble();
+    double latestTimeStampInMilliSec = eventValues.last.timeStamp.second.toDouble();
     return LineChart(
       LineChartData(
         clipData: FlClipData.all(),
@@ -55,11 +58,11 @@ class StreamLineChart extends StatelessWidget {
         //axisTitleData: FlAxisTitleData(bottomTitle: AxisTitle(showTitle: false)),
         lineBarsData: _eventValuesToLineBarsData(eventValues),
         maxX: latestTimeStampInMilliSec,
-        minX: latestTimeStampInMilliSec - timeRange.inMilliseconds,
+        minX: latestTimeStampInMilliSec - timeRange.inSeconds,
         maxY: maxY,
         minY: minY,
       ),
-      swapAnimationDuration: const Duration(seconds: 1),
+      swapAnimationDuration: const Duration(milliseconds: 500),
     );
   }
 }

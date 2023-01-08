@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:bordered_text/bordered_text.dart';
 import 'package:cosinuss/BluetoothHandler.dart';
+import 'package:cosinuss/screens/recording/widgets/recording_button.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_alertdialog.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_listtile.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_textfield.dart';
@@ -121,6 +122,7 @@ class _TrainingState extends State<Training> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             FloatingActionButton(
+              heroTag: "btn1",
               child: const Icon(Icons.bluetooth),
               backgroundColor: _isConnected ? Colors.blue : Colors.grey,
               onPressed: () {
@@ -128,6 +130,7 @@ class _TrainingState extends State<Training> {
               },
             ),
             FloatingActionButton(
+              heroTag: "btn2",
               child: const Icon(Icons.add),
               backgroundColor: Colors.blue,
               onPressed: () {
