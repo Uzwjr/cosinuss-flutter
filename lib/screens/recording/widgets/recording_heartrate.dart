@@ -11,16 +11,16 @@ class RecordingHeartRate<T> extends StatefulWidget {
       //required this.handler,
       required this.timeRange,
       this.minValue,
-      this.maxValue})
+      this.maxValue,
+        required this.startTimeGetter})
       : super(key: key);
 
   final Stream<T> stream;
 
-  //final List<double> Function(T) handler;
+  final Function startTimeGetter;
   final Duration timeRange;
   final double? minValue;
   final double? maxValue;
-
   @override
   _RecordingHeartRateState<T> createState() => _RecordingHeartRateState<T>();
 }
@@ -28,27 +28,29 @@ class RecordingHeartRate<T> extends StatefulWidget {
 class _RecordingHeartRateState<T> extends State<RecordingHeartRate> {
   late StreamSubscription<double> _subscription;
   final List<RecordingValue> _data = [];
-  //String recordingTime = '0:0';
-  //bool isRecording = false;
 
   @override
-  void initState() {
+  initState() {
     super.initState();
     Stream<double> mappedStream = widget.stream.map((i) => i as double);
     _subscription = mappedStream.listen((event) {
       DateTime now = DateTime.now();
+
       //check if old data can be removed
-      _data.removeWhere((element) =>
-          element.timeStamp.isBefore(now.subtract(widget.timeRange)));
-      setState(() {
-        _data.add(RecordingValue(event, DateTime.now()));
-      });
+      if (widget.startTimeGetter() != null) {
+        _data.removeWhere((element) =>
+            element.timeStamp.isBefore(now.subtract(widget.timeRange)));
+        setState(() {
+          _data.add(RecordingValue(event, DateTime.now()));
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamLineChart(
+      startTimeGetter: widget.startTimeGetter,
       eventValues: _data,
       timeRange: widget.timeRange,
       maxY: widget.maxValue,

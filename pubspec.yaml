@@ -38,7 +38,6 @@ dependencies:
   auto_size_text: ^3.0.0
   bordered_text: ^2.0.0
   fl_chart: ^0.55.2
-  esense_flutter: ^0.6.2
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../models/recording_value.dart';
@@ -8,30 +10,30 @@ class StreamLineChart extends StatelessWidget {
     required this.eventValues,
     required this.timeRange,
     this.maxY,
-    this.minY,
+    this.minY, required this.startTimeGetter,
   }) : super(key: key);
   final List<RecordingValue> eventValues;
   final Duration timeRange;
   final double? maxY;
   final double? minY;
+  final Function startTimeGetter;
 
   //final List<Color> _colors = const [Colors.red, Colors.blue, Colors.orange];
 
   List<LineChartBarData> _eventValuesToLineBarsData(List<RecordingValue> eventValues) {
     List<List<FlSpot>> spots = [];
 
-    //for (var _ in eventValues[0].value) {
-      spots.add([]);
-   // }
+    spots.add([]);
 
     for (var event in eventValues) {
-       DateTime now = DateTime.now();
-       var diff = DateTime.now().difference(now).inSeconds;
-
-       // for (int i = 0; i < event.value.length; i++) {
-        spots[0].add(FlSpot(diff.toDouble(), event.value));
+      var diff = -1;
+      if (startTimeGetter() != null) {
+        log (startTimeGetter().toString());
+        diff = startTimeGetter().difference(DateTime.now()).inSeconds;
       }
-   // }
+      spots[0].add(FlSpot(diff.toDouble(), event.value));
+    }
+
     List<LineChartBarData> lineBarsData = [];
     spots.map((e) => LineChartBarData(spots: e, dotData: FlDotData(show: false))).toList();
     for (var i = 0; i < spots.length; i++) {
@@ -53,7 +55,9 @@ class StreamLineChart extends StatelessWidget {
       LineChartData(
         clipData: FlClipData.all(),
         titlesData: FlTitlesData(
-        //    bottomTitles: SideTitles(showTitles: false), topTitles: SideTitles(showTitles: false)
+          topTitles: AxisTitles(),
+         rightTitles: AxisTitles(),
+         //   topTitles: SideTitles(showTitles: false)
         ),
         //axisTitleData: FlAxisTitleData(bottomTitle: AxisTitle(showTitle: false)),
         lineBarsData: _eventValuesToLineBarsData(eventValues),
@@ -62,7 +66,7 @@ class StreamLineChart extends StatelessWidget {
         maxY: maxY,
         minY: minY,
       ),
-      swapAnimationDuration: const Duration(milliseconds: 500),
+      swapAnimationDuration: const Duration(seconds: 1),
     );
   }
 }

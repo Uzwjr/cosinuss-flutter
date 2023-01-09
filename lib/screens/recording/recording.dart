@@ -1,6 +1,7 @@
+import 'dart:developer';
+
 import 'package:bordered_text/bordered_text.dart';
 import 'package:cosinuss/dimensions.dart';
-import 'package:cosinuss/screens/recording/widgets/recording_bodytemperature.dart';
 import 'package:cosinuss/screens/recording/widgets/recording_button.dart';
 import 'package:cosinuss/screens/recording/widgets/recording_heartrate.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +23,21 @@ class Recording extends StatefulWidget {
 }
 
 class _RecodingState extends State<Recording> {
-  void _onPressed(bool isStarted) {
-    if (!isStarted) {
+  DateTime? _startTime;
 
+  set startTime(DateTime value) {
+    _startTime = value;
+  }
+
+  DateTime? startTimeGetter() {
+    return _startTime;
+  }
+
+  void startStopRecording(bool isStarted) {
+    if (!isStarted) {
+      _startTime = DateTime.now();
+    } else {
+      _startTime = null;
     }
   }
 
@@ -45,38 +58,54 @@ class _RecodingState extends State<Recording> {
           textAlign: TextAlign.end,
         )),
       ),
-      body: Flex(
-        direction:
-            Dimensions.screenOrientation ? Axis.horizontal : Axis.vertical,
-        children: [
-          Expanded(
-              child: RecordingHeartRate(
-            // handler: _handleHeartRate,
-            stream: widget.heartBeatStream,
-            timeRange: const Duration(seconds: 10),
-            minValue: 60.0,
-            maxValue: 200.0,
-          )),
-          Expanded(
-            child : Padding(
-              padding: EdgeInsets.only(bottom: Dimensions.boxHeight * 8),
-              child: RecordingHeartRate(
-            // handler: _handleHeartRate,
-            stream: widget.temperatureStream,
-            timeRange: const Duration(seconds: 10),
-            minValue: 30.0,
-            maxValue: 40.0,
+      body: Column(children: [
+        Flex(
+          direction:
+              Dimensions.screenOrientation ? Axis.horizontal : Axis.vertical,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  right: Dimensions.boxWidth * 5,
+                  top: Dimensions.boxHeight * 2),
+              child: SizedBox(
+                  height: Dimensions.boxHeight * 39,
+                  width: Dimensions.boxWidth * 95,
+                  child: RecordingHeartRate(
+                    // handler: _handleHeartRate,
+                    startTimeGetter: startTimeGetter,
+                    stream: widget.heartBeatStream,
+                    timeRange: const Duration(seconds: 10),
+                    minValue: 60.0,
+                    maxValue: 200.0,
+                  )),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  right: Dimensions.boxWidth * 5,
+                  top: Dimensions.boxHeight * 2),
+              child: SizedBox(
+                height: Dimensions.boxHeight * 39,
+                width: Dimensions.boxWidth * 95,
+                child: RecordingHeartRate(
+                  startTimeGetter: startTimeGetter,
+                  // handler: _handleHeartRate,
+                  stream: widget.temperatureStream,
+                  timeRange: const Duration(seconds: 10),
+                  minValue: 30.0,
+                  maxValue: 40.0,
+                ),
               ),
-          )),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: RecordingButton(
-        isStarted: false,
-        onPressed: (isStarted) {
-          _onPressed;
-        },
-      ),
+            )
+          ],
+        ),
+        Center(
+          child: RecordingButton(
+            onPressed: (isStarted) {
+              startStopRecording(isStarted);
+            },
+          ),
+        ),
+      ]),
     );
   }
 }
