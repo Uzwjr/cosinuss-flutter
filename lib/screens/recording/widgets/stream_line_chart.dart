@@ -21,24 +21,21 @@ class StreamLineChart extends StatelessWidget {
   //final List<Color> _colors = const [Colors.red, Colors.blue, Colors.orange];
 
   List<LineChartBarData> _eventValuesToLineBarsData(List<RecordingValue> eventValues) {
-    List<List<FlSpot>> spots = [];
-
-    spots.add([]);
+    List<FlSpot> spots = [];
 
     for (var event in eventValues) {
       var diff = -1;
       if (startTimeGetter() != null) {
-        log (startTimeGetter().toString());
-        diff = startTimeGetter().difference(DateTime.now()).inSeconds;
+        diff = event.timeStamp.difference(startTimeGetter()).inSeconds;
       }
-      spots[0].add(FlSpot(diff.toDouble(), event.value));
+      spots.add(FlSpot(diff.toDouble(), event.value));
     }
 
     List<LineChartBarData> lineBarsData = [];
-    spots.map((e) => LineChartBarData(spots: e, dotData: FlDotData(show: false))).toList();
+    //spots.map((e) => LineChartBarData(spots: e.toDouble(), dotData: FlDotData(show: false))).toList();
     for (var i = 0; i < spots.length; i++) {
       lineBarsData.add(LineChartBarData(
-        spots: spots[i],
+        spots: spots,
         color: Colors.blue,
         dotData: FlDotData(show: true),
       ));
@@ -49,20 +46,20 @@ class StreamLineChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (eventValues.isEmpty) return const Center(child: Text("Waiting for first event..."));
-
-    double latestTimeStampInMilliSec = eventValues.last.timeStamp.second.toDouble();
+    double latestTimeStampDiff = 10;
+    if (startTimeGetter() != null) {
+      latestTimeStampDiff = eventValues.last.timeStamp.difference(startTimeGetter()).inSeconds.toDouble();
+    }
     return LineChart(
       LineChartData(
         clipData: FlClipData.all(),
         titlesData: FlTitlesData(
           topTitles: AxisTitles(),
          rightTitles: AxisTitles(),
-         //   topTitles: SideTitles(showTitles: false)
         ),
-        //axisTitleData: FlAxisTitleData(bottomTitle: AxisTitle(showTitle: false)),
         lineBarsData: _eventValuesToLineBarsData(eventValues),
-        maxX: latestTimeStampInMilliSec,
-        minX: latestTimeStampInMilliSec - timeRange.inSeconds,
+        maxX: latestTimeStampDiff,
+        minX: latestTimeStampDiff - timeRange.inSeconds,
         maxY: maxY,
         minY: minY,
       ),

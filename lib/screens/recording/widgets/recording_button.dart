@@ -27,7 +27,6 @@ class RecordingButtonState extends State<RecordingButton> {
       width: Dimensions.boxWidth * 80,
       child: FloatingActionButton.extended(
         onPressed: () {
-          log("MEH0");
           widget.onPressed(isStarted);
           setState(() {
             isStarted = !isStarted;
@@ -40,7 +39,7 @@ class RecordingButtonState extends State<RecordingButton> {
           runningStatus,
           style: TextStyle(
             color: Colors.white,
-            fontSize: Dimensions.boxWidth * 7.5,
+            fontSize: Dimensions.boxHeight * 5.5,
           ),
           textAlign: TextAlign.end,
         )),

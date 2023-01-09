@@ -26,6 +26,13 @@ class _TrainingState extends State<Training> {
   final _temperatureController = StreamController<double>.broadcast();
 
 
+  @override
+  void initState() {
+    super.initState();
+    _numberCreator();
+  }
+
+
   void _addExercise(Exercise newExercise) {
     setState(() {
       exercises.insert(0, newExercise);
@@ -73,8 +80,8 @@ class _TrainingState extends State<Training> {
 
   void _numberCreator() {
     double countA = 100;
-    double countB = 35;
-    Timer.periodic(Duration(seconds: 2), (t) {
+    double countB = 38;
+    Timer.periodic(Duration(seconds: 1), (t) {
       _heartBeatController.sink.add(countA);
       _temperatureController.sink.add(countB);
       bool random = Random().nextBool();
@@ -92,7 +99,6 @@ class _TrainingState extends State<Training> {
 
   @override
   Widget build(BuildContext context) {
-    _numberCreator();
     Dimensions(context);
     return Scaffold(
       appBar: AppBar(

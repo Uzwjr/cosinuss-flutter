@@ -41,7 +41,7 @@ class _RecordingHeartRateState<T> extends State<RecordingHeartRate> {
         _data.removeWhere((element) =>
             element.timeStamp.isBefore(now.subtract(widget.timeRange)));
         setState(() {
-          _data.add(RecordingValue(event, DateTime.now()));
+          _data.add(RecordingValue(event, now));
         });
       }
     });

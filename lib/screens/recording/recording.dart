@@ -46,18 +46,18 @@ class _RecodingState extends State<Recording> {
     Dimensions(context);
     return Scaffold(
       appBar: AppBar(
-        titleSpacing: Dimensions.boxWidth * 22,
-        title: BorderedText(
+          title: Center(
+            child: BorderedText(
             //strokeColor: Colors.lightBlue,
             child: Text(
-          widget.name,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: Dimensions.boxWidth * 7.5,
-          ),
+              widget.name,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: Dimensions.boxHeight * 5.5
+              ),
           textAlign: TextAlign.end,
         )),
-      ),
+      )),
       body: Column(children: [
         Flex(
           direction:
@@ -68,8 +68,12 @@ class _RecodingState extends State<Recording> {
                   right: Dimensions.boxWidth * 5,
                   top: Dimensions.boxHeight * 2),
               child: SizedBox(
-                  height: Dimensions.boxHeight * 39,
-                  width: Dimensions.boxWidth * 95,
+                  height: Dimensions.screenOrientation
+                      ? Dimensions.boxHeight * 70
+                      : Dimensions.boxHeight * 39,
+                  width: Dimensions.screenOrientation
+                      ? Dimensions.boxWidth * 45
+                      : Dimensions.boxWidth * 95,
                   child: RecordingHeartRate(
                     // handler: _handleHeartRate,
                     startTimeGetter: startTimeGetter,
@@ -84,8 +88,12 @@ class _RecodingState extends State<Recording> {
                   right: Dimensions.boxWidth * 5,
                   top: Dimensions.boxHeight * 2),
               child: SizedBox(
-                height: Dimensions.boxHeight * 39,
-                width: Dimensions.boxWidth * 95,
+                height: Dimensions.screenOrientation
+                    ? Dimensions.boxHeight * 70
+                    : Dimensions.boxHeight * 39,
+                width: Dimensions.screenOrientation
+                    ? Dimensions.boxWidth * 45
+                    : Dimensions.boxWidth * 95,
                 child: RecordingHeartRate(
                   startTimeGetter: startTimeGetter,
                   // handler: _handleHeartRate,
