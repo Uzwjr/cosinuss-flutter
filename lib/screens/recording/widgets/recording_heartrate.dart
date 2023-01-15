@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cosinuss/screens/recording/models/recording_value.dart';
 import 'package:cosinuss/screens/recording/widgets/stream_line_chart.dart';
@@ -34,14 +35,15 @@ class _RecordingHeartRateState<T> extends State<RecordingHeartRate> {
     super.initState();
     Stream<double> mappedStream = widget.stream.map((i) => i as double);
     _subscription = mappedStream.listen((event) {
-      DateTime now = DateTime.now();
-
       //check if old data can be removed
       if (widget.startTimeGetter() != null) {
         _data.removeWhere((element) =>
-            element.timeStamp.isBefore(now.subtract(widget.timeRange)));
+            element.timeStamp.isBefore(DateTime.now().subtract(widget.timeRange)));
         setState(() {
-          _data.add(RecordingValue(event, now));
+          _data.add(RecordingValue(event, DateTime.now()));
+          for (int i = 0; i < _data.length; i++) {
+            log(i.toString() + " " + _data[i].value.toString());
+          }
         });
       }
     });

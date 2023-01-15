@@ -46,6 +46,7 @@ class _RecodingState extends State<Recording> {
     Dimensions(context);
     return Scaffold(
       appBar: AppBar(
+          toolbarHeight: Dimensions.boxHeight * 6,
           title: Center(
             child: BorderedText(
             //strokeColor: Colors.lightBlue,
@@ -53,11 +54,11 @@ class _RecodingState extends State<Recording> {
               widget.name,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: Dimensions.boxHeight * 5.5
+                fontSize: Dimensions.boxHeight * 5
               ),
           textAlign: TextAlign.end,
         )),
-      )),
+     )),
       body: Column(children: [
         Flex(
           direction:

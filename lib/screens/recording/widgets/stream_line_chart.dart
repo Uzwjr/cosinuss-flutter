@@ -37,7 +37,7 @@ class StreamLineChart extends StatelessWidget {
       lineBarsData.add(LineChartBarData(
         spots: spots,
         color: Colors.blue,
-        dotData: FlDotData(show: true),
+        dotData: FlDotData(show: false),
       ));
     }
     return lineBarsData;
@@ -46,10 +46,11 @@ class StreamLineChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (eventValues.isEmpty) return const Center(child: Text("Waiting for first event..."));
-    double latestTimeStampDiff = 10;
+    double latestTimeStampDiff = 0;
     if (startTimeGetter() != null) {
       latestTimeStampDiff = eventValues.last.timeStamp.difference(startTimeGetter()).inSeconds.toDouble();
     }
+
     return LineChart(
       LineChartData(
         clipData: FlClipData.all(),
