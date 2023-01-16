@@ -38,10 +38,14 @@ dependencies:
   auto_size_text: ^3.0.0
   bordered_text: ^2.0.0
   fl_chart: ^0.55.2
+  floor: ^1.4.1
 
 dev_dependencies:
+  floor_generator: ^1.4.1
+  build_runner: ^2.1.2
   flutter_test:
     sdk: flutter
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

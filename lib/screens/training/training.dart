@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:bordered_text/bordered_text.dart';
 import 'package:cosinuss/BluetoothHandler.dart';
-import 'package:cosinuss/screens/recording/widgets/recording_button.dart';
+import 'package:cosinuss/database/database.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_alertdialog.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_listtile.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_textfield.dart';
@@ -19,11 +19,15 @@ class Training extends StatefulWidget {
 }
 
 class _TrainingState extends State<Training> {
-  List<Exercise> exercises = [];
+  List<Exercise> _exercises = [];
   bool _isConnected = false;
   final BluetoothHandler _bluetoothHandler = BluetoothHandler(_update);
   final _heartBeatController = StreamController<double>.broadcast();
   final _temperatureController = StreamController<double>.broadcast();
+
+  late final _database;
+  late final _exerciseDao;
+
 
 
   @override
@@ -33,17 +37,20 @@ class _TrainingState extends State<Training> {
   }
 
 
-  void _addExercise(Exercise newExercise) {
-    setState(() {
-      exercises.insert(0, newExercise);
+  void _addExercise(Exercise newExercise) async{
+    await _exerciseDao.insertExercise(newExercise);
+    setState(()  {
+      _exercises.insert(0, newExercise);
     });
   }
 
-  void _removeExercise(int id) {
-    int index = exercises.indexWhere((exercise) => exercise.id == id);
+  void _removeExercise(int id) async {
+    int index = _exercises.indexWhere((exercise) => exercise.id == id);
+    Exercise exercise = _exercises.elementAt(index);
     if (index != -1) {
+      await _exerciseDao.deleteExercise(exercise);
       setState(() {
-        exercises.removeAt(index);
+        _exercises.removeAt(index);
       });
     }
   }
@@ -81,7 +88,7 @@ class _TrainingState extends State<Training> {
   void _numberCreator() {
     double countA = 100;
     double countB = 38;
-    Timer.periodic(Duration(seconds: 1), (t) {
+    Timer.periodic(const Duration(seconds: 1), (t) {
       _heartBeatController.sink.add(countA);
       _temperatureController.sink.add(countB);
       bool random = Random().nextBool();
@@ -96,9 +103,19 @@ class _TrainingState extends State<Training> {
     });
   }
 
+  Future<void> _buildDatabase() async {
+      setState(() async {
+        _database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+        _exerciseDao = _database.exerciseDao;
+        _exercises = await _exerciseDao.findAllExercises();
+        setState(() {
+        });
+      });
+  }
 
   @override
   Widget build(BuildContext context) {
+      _buildDatabase();
     Dimensions(context);
     return Scaffold(
       appBar: AppBar(
@@ -115,10 +132,10 @@ class _TrainingState extends State<Training> {
         )),
       ),
       body: ListView.builder(
-        itemCount: exercises.length,
+        itemCount: _exercises.length,
         itemBuilder: (context, index) {
           return ExerciseListTile(
-              exercise: exercises[index], onLongPress: _askIfDelete, heartBeatStream: heartBeatStream, temperatureStream: temperatureStream,);
+              exercise: _exercises[index], onLongPress: _askIfDelete, heartBeatStream: heartBeatStream, temperatureStream: temperatureStream,);
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

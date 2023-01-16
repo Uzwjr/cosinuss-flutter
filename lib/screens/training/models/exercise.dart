@@ -1,6 +1,11 @@
+import 'package:floor/floor.dart';
+
+@entity
 class Exercise {
   Exercise({required this.name, required this.id});
 
-  String name;
-  int id;
+  final String name;
+
+  @primaryKey
+  final int id;
 }
