@@ -5,7 +5,7 @@ import 'package:floor/floor.dart';
 @dao
 abstract class ExerciseDao{
 
-  @Query('SELECT * FROM Exercise')
+  @Query('SELECT * FROM Exercise ORDER BY id DESC')
   Future<List<Exercise>> findAllExercises();
 
   @Query('SELECT * FROM Exercise WHERE id = :id')

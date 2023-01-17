@@ -32,8 +32,9 @@ class _TrainingState extends State<Training> {
 
   @override
   void initState() {
-    super.initState();
+    _buildDatabase();
     _numberCreator();
+    super.initState();
   }
 
 
@@ -115,7 +116,6 @@ class _TrainingState extends State<Training> {
 
   @override
   Widget build(BuildContext context) {
-      _buildDatabase();
     Dimensions(context);
     return Scaffold(
       appBar: AppBar(
