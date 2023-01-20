@@ -1,10 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:floor/floor.dart';
 
-class HistorySession<V> {
+@entity
+class HistorySession {
 
-  HistorySession(this.label, this.value, this.spots);
+  HistorySession(this.id, this.name, this.spots);
 
-  final String label;
-  final V value;
+  @primaryKey
+  final int id;
+
+  final String name;
   List<FlSpot> spots = [];
 }

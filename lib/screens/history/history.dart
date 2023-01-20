@@ -1,5 +1,6 @@
 import 'package:bordered_text/bordered_text.dart';
 import 'package:cosinuss/screens/history/widgets/history_listtile.dart';
+import 'package:cosinuss/screens/history/widgets/history_multiselect.dart';
 import 'package:flutter/material.dart';
 
 import '../../database/database.dart';
@@ -15,13 +16,19 @@ class History extends StatefulWidget {
 class HistoryState extends State<History> {
   List<Exercise> _exercises = [];
 
-  late final _database;
+  late final _exerciseDB;
   late final _exerciseDao;
 
+  late final _historySessionDB;
+  late final _historySessionDao;
+
   Future<void> _buildDatabase() async {
-      _database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
-      _exerciseDao = _database.exerciseDao;
+      _exerciseDB = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+      _exerciseDao = _exerciseDB.exerciseDao;
       _exercises = await _exerciseDao.findAllExercises();
+
+      _historySessionDB = await $FloorAppDatabase.databaseBuilder('app_historysession.db').build();
+      _historySessionDao = _historySessionDB.historySessionDao;
       setState(() {
       });
   }
@@ -53,7 +60,8 @@ class HistoryState extends State<History> {
         itemBuilder: (context, index) {
           return HistoryListTile(
             exercise: _exercises[index],
-            onLongPress: (int id) {},
+            historySessionDao: _historySessionDao,
+            onLongPress: (int id) {  }, //TODO DELETE OPTION ADDEN
           );
         },
       ),

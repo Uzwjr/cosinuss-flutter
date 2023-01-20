@@ -1,29 +1,20 @@
 import 'package:cosinuss/screens/history/models/history_session.dart';
 import 'package:flutter/material.dart';
 
-class HistoryMultiSelect<V> extends StatefulWidget {
-  const HistoryMultiSelect({Key? key, required this.items, required this.initialSelectedValues}) : super(key: key);
+class HistoryMultiSelect extends StatefulWidget {
+  const HistoryMultiSelect({Key? key, required this.items}) : super(key: key);
 
-  final List<HistorySession<V>> items;
-  final Set<V> initialSelectedValues;
+  final List<HistorySession> items;
 
   @override
-  State<HistoryMultiSelect> createState() => HistoryMultiSelectState<V>();
+  State<HistoryMultiSelect> createState() => HistoryMultiSelectState();
 }
 
 
 
-class HistoryMultiSelectState<V> extends State<HistoryMultiSelect<V>> {
+class HistoryMultiSelectState extends State<HistoryMultiSelect> {
 
-  final _selectedValues = Set<V>();
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.initialSelectedValues != null) {
-      _selectedValues.addAll(widget.initialSelectedValues);
-    }
-  }
+  final _selectedValues = Set<HistorySession>();
 
   void _canceled() {
     Navigator.pop(context);
@@ -33,12 +24,12 @@ class HistoryMultiSelectState<V> extends State<HistoryMultiSelect<V>> {
     Navigator.pop(context, _selectedValues);
   }
 
-  void _onItemCheckedChange(V itemValue, bool checked) {
+  void _onItemCheckedChange(HistorySession historySession, bool checked) {
     setState(() {
       if (checked) {
-        _selectedValues.add(itemValue);
+        _selectedValues.add(historySession);
       } else {
-        _selectedValues.remove(itemValue);
+        _selectedValues.remove(historySession);
       }
     });
   }
@@ -67,13 +58,13 @@ class HistoryMultiSelectState<V> extends State<HistoryMultiSelect<V>> {
       ],
     );
   }
-  Widget _buildItem(HistorySession<V> item) {
-    final checked = _selectedValues.contains(item.value);
+  Widget _buildItem(HistorySession item) {
+    final checked = _selectedValues.contains(item);
     return CheckboxListTile(
       value: checked,
-      title: Text(item.label),
+      title: Text(item.name),
       controlAffinity: ListTileControlAffinity.leading,
-      onChanged: (checked) => _onItemCheckedChange(item.value, checked!),
+      onChanged: (checked) => _onItemCheckedChange(item, checked!),
     );
   }
 }
