@@ -31,7 +31,7 @@ class TaskButton extends StatelessWidget {
             image: AssetImage('assets/images/' + name + '.jpg'),
             height: Dimensions.boxHeight * 27,
             width: double.infinity,
-            fit: BoxFit.fitWidth,
+            fit: BoxFit.cover,
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               BorderedText(
                   child: Text(name,

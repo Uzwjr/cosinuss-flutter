@@ -1,5 +1,6 @@
-
 import 'package:bordered_text/bordered_text.dart';
+import 'package:cosinuss/screens/history/widgets/history_multiselect.dart';
+import 'package:cosinuss/screens/training/widgets/exercise_alertdialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,8 +8,10 @@ import '../../../dimensions.dart';
 import '../../comparison/comparison.dart';
 import '../../training/models/exercise.dart';
 
-class HistoryListTile extends StatelessWidget{
-  const HistoryListTile({Key? key, required this.exercise, required this.onLongPress}) : super(key: key);
+class HistoryListTile extends StatelessWidget {
+  const HistoryListTile(
+      {Key? key, required this.exercise, required this.onLongPress})
+      : super(key: key);
 
   final Exercise exercise;
   final void Function(int id) onLongPress;
@@ -26,11 +29,14 @@ class HistoryListTile extends StatelessWidget{
     return Card(
       child: ElevatedButton(
 
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => Comparison(), //TODO Fill in Parameters
-            ),
-          ),
+          onPressed: () =>
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (context) {
+                      return HistoryMultiSelect(items: [], initialSelectedValues: null,);
+                    }
+                ),
+              ),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             BorderedText(
                 child: Text(exercise.name,
