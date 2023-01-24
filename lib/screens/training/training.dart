@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:bordered_text/bordered_text.dart';
 import 'package:cosinuss/BluetoothHandler.dart';
-import 'package:cosinuss/database/database.dart';
+import 'package:cosinuss/database/exercise_database.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_alertdialog.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_listtile.dart';
 import 'package:cosinuss/screens/training/widgets/exercise_textfield.dart';
@@ -105,12 +105,10 @@ class _TrainingState extends State<Training> {
   }
 
   Future<void> _buildDatabase() async {
-      setState(() async {
-        _database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
-        _exerciseDao = _database.exerciseDao;
-        _exercises = await _exerciseDao.findAllExercises();
-        setState(() {
-        });
+      _database = await $FloorExerciseDatabase.databaseBuilder('exercise_database.db').build();
+      _exerciseDao = _database.exerciseDao;
+      _exercises = await _exerciseDao.findAllExercises();
+      setState(() {
       });
   }
 

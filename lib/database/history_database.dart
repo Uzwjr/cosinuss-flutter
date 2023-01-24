@@ -3,11 +3,11 @@ import 'package:floor/floor.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
 import '../screens/history/models/history_session.dart';
-import 'package:cosinuss/database/historysession_dao.dart';
+import 'package:cosinuss/database/history_dao.dart';
 
-part 'historysessiondb.g.dart';
+part 'history_database.g.dart';
 
 @Database (version: 1, entities: [HistorySession])
-abstract class HistorySessionDB extends FloorDatabase {
-  HistorySessionDao get historySessionDao;
+abstract class HistoryDatabase extends FloorDatabase {
+  HistoryDao get historyDao;
 }

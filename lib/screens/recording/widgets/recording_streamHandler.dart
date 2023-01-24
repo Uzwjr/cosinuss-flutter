@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:cosinuss/screens/recording/models/recording_value.dart';
 import 'package:cosinuss/screens/recording/widgets/stream_line_chart.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 
 class RecordingHeartRate<T> extends StatefulWidget {
@@ -13,16 +14,17 @@ class RecordingHeartRate<T> extends StatefulWidget {
       required this.timeRange,
       this.minValue,
       this.maxValue,
-        required this.startTimeGetter,
+        required this.startTime,
         required this.saveHistorySession, 
-        required this.streamType})
+        required this.streamType, 
+        required this.running})
       : super(key: key);
 
   final Stream<T> stream;
   final int streamType;
-
-  final Function startTimeGetter;
-  final Function saveHistorySession;
+  final bool running;
+  final DateTime startTime;
+  final Function(int streamNumber, List<FlSpot> spots) saveHistorySession;
   final Duration timeRange;
   final double? minValue;
   final double? maxValue;
@@ -41,7 +43,7 @@ class _RecordingHeartRateState<T> extends State<RecordingHeartRate> {
     Stream<double> mappedStream = widget.stream.map((i) => i as double);
     _subscription = mappedStream.listen((event) {
       //check if old data can be removed
-      if (widget.startTimeGetter() != null) {
+      if (widget.running) {
         _data.removeWhere((element) =>
             element.timeStamp.isBefore(DateTime.now().subtract(widget.timeRange)));
         setState(() {
@@ -62,9 +64,9 @@ class _RecordingHeartRateState<T> extends State<RecordingHeartRate> {
   Widget build(BuildContext context) {
 
     return StreamLineChart(
-      startTimeGetter: widget.startTimeGetter,
+      startTime: widget.startTime,
       saveHistorySession: widget.saveHistorySession,
-
+      running: widget.running,
       eventValues: _data,
       timeRange: widget.timeRange,
       maxY: widget.maxValue,

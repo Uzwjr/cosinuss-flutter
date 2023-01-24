@@ -3,7 +3,7 @@ import 'package:cosinuss/screens/history/models/history_session.dart';
 import 'package:floor/floor.dart';
 
 @dao
-abstract class HistorySessionDao{
+abstract class HistoryDao{
 
   @Query('SELECT * FROM Exercise WHERE id = :id ORDER BY id DESC')
   Future<List<HistorySession>> findAllHistorySessionWithId(int id);

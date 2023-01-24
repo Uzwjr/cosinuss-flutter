@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:bordered_text/bordered_text.dart';
 import 'package:cosinuss/dimensions.dart';
@@ -8,14 +9,15 @@ import 'package:cosinuss/screens/recording/widgets/recording_streamHandler.dart'
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-import '../../database/database.dart';
+import '../../database/history_database.dart';
 
 class Recording extends StatefulWidget {
-  const Recording({Key? key,
-    required this.name,
-    required this.heartBeatStream,
-    required this.temperatureStream,
-    required this.id})
+  const Recording(
+      {Key? key,
+      required this.name,
+      required this.heartBeatStream,
+      required this.temperatureStream,
+      required this.id})
       : super(key: key);
 
   final int id;
@@ -23,16 +25,15 @@ class Recording extends StatefulWidget {
   final Stream<double> heartBeatStream;
   final Stream<double> temperatureStream;
 
-
   @override
   State<StatefulWidget> createState() => _RecodingState();
 }
 
 class _RecodingState extends State<Recording> {
-
-  DateTime? _startTime;
-  late final _historySessionDb;
-  late final _historySessionDao;
+  bool running = false;
+  DateTime startTime = DateTime.now();
+  late final _historyDatabase;
+  late final _historyDao;
 
   @override
   void initState() {
@@ -41,51 +42,53 @@ class _RecodingState extends State<Recording> {
   }
 
   Future<void> _buildDatabase() async {
-    setState(() async {
-      _historySessionDb =
-      await $FloorAppDatabase.databaseBuilder('app_database.db').build();
-      _historySessionDao = _historySessionDb.historySessionDao;
-      _historySessionDb = await _historySessionDao.findAllExercises();
+    //setState(() async {
+      _historyDatabase = await $FloorHistoryDatabase
+          .databaseBuilder('history_database.db')
+          .build();
+      _historyDao = _historyDatabase.historyDao;
       setState(() {});
-    });
+    //});
   }
 
-  void saveHistorySession(int sessionID, int streamNumber, List<FlSpot> spots) {
-    String jsonString = json.encode(spots);
-    HistorySession historySession;
-    if(_historySessionDao.findHistorySessionsById(sessionID) != null) {
-      historySession = _historySessionDao.findHistorySessionsById(sessionID);
-    }
-    else {
-      historySession = HistorySession(widget.id, widget.name, "", "");
+  Future<void> saveHistorySession(int streamNumber, List<FlSpot> spots) async {
+    var historyMap = spots.map((e) {
+      return {
+        "x": e.x,
+        "y": e.y,
+      };
+    }).toList(); //convert to map
 
+    String jsonString = json.encode(historyMap);
+    HistorySession historySession;
+
+    if (_historyDao.findHistorySessionsById(startTime.millisecondsSinceEpoch) == const Stream.empty()) {
+      log ("meh42");
+      historySession = await _historyDao.findHistorySessionsById(
+          startTime.millisecondsSinceEpoch);
+       //TODO KLAPPT NOCH NICHT
+    } else {
+      log("meh43");
+      historySession = HistorySession(
+          startTime.millisecondsSinceEpoch, widget.id, widget.name, "", "");
+    }
       if (streamNumber == 0) {
         historySession.heartRateFlSpotsAsJson = jsonString;
-      }
-      else {
+      } else {
         historySession.temperatureFlSpotsAsJson = jsonString;
       }
-    }
-    _historySessionDao.insertHistorySession(historySession);
+    _historyDao.insertHistorySession(historySession);
   }
-
 
   void startStopRecording(bool isStarted) {
     setState(() {
       if (!isStarted) {
-        _startTime = DateTime.now();
+        startTime = DateTime.now();
+        running = true;
       } else {
-        _startTime = null;
+        running = false;
       }
     });
-  }
-
-  set startTime(DateTime value) {
-    _startTime = value;
-  }
-
-  DateTime? startTimeGetter() {
-    return _startTime;
   }
 
   @override
@@ -96,18 +99,18 @@ class _RecodingState extends State<Recording> {
           toolbarHeight: Dimensions.boxHeight * 6,
           title: Center(
             child: BorderedText(
-              //strokeColor: Colors.lightBlue,
+                //strokeColor: Colors.lightBlue,
                 child: Text(
-                  widget.name,
-                  style: TextStyle(
-                      color: Colors.white, fontSize: Dimensions.boxHeight * 5),
-                  textAlign: TextAlign.end,
-                )),
+              widget.name,
+              style: TextStyle(
+                  color: Colors.white, fontSize: Dimensions.boxHeight * 5),
+              textAlign: TextAlign.end,
+            )),
           )),
       body: Column(children: [
         Flex(
           direction:
-          Dimensions.screenOrientation ? Axis.horizontal : Axis.vertical,
+              Dimensions.screenOrientation ? Axis.horizontal : Axis.vertical,
           children: [
             Padding(
               padding: EdgeInsets.only(
@@ -122,7 +125,8 @@ class _RecodingState extends State<Recording> {
                       : Dimensions.boxWidth * 95,
                   child: RecordingHeartRate(
                     // handler: _handleHeartRate,
-                    startTimeGetter: startTimeGetter,
+                    startTime: startTime,
+                    running: running,
                     saveHistorySession: saveHistorySession,
                     stream: widget.heartBeatStream,
                     timeRange: const Duration(seconds: 10),
@@ -143,7 +147,8 @@ class _RecodingState extends State<Recording> {
                     ? Dimensions.boxWidth * 45
                     : Dimensions.boxWidth * 95,
                 child: RecordingHeartRate(
-                  startTimeGetter: startTimeGetter,
+                  startTime: startTime,
+                  running: running,
                   saveHistorySession: saveHistorySession,
                   // handler: _handleHeartRate,
                   stream: widget.temperatureStream,

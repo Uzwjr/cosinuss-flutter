@@ -11,19 +11,21 @@ class StreamLineChart extends StatelessWidget {
     required this.timeRange,
     this.maxY,
     this.minY,
-    required this.startTimeGetter,
+    required this.startTime,
     required this.saveHistorySession,
     required this.historySessionData,
-    required this.streamType,
+    required this.streamType, 
+    required this.running,
   }) : super(key: key);
   final List<RecordingValue> eventValues;
   final List<RecordingValue> historySessionData;
   final Duration timeRange;
   final double? maxY;
   final double? minY;
-  final Function startTimeGetter;
-  final Function saveHistorySession;
+  final DateTime startTime;
+  final Function(int streamNumber, List<FlSpot> spots) saveHistorySession;
   final int streamType;
+  final bool running;
 
   //final List<Color> _colors = const [Colors.red, Colors.blue, Colors.orange];
 
@@ -31,14 +33,13 @@ class StreamLineChart extends StatelessWidget {
     List<FlSpot> spots = [];
 
     for (var event in eventValues) {
-      var diff = -1;
-      if (startTimeGetter() != null) {
-        diff = event.timeStamp.difference(startTimeGetter()).inSeconds;
+      if (running) {
+      var diff = event.timeStamp.difference(startTime).inSeconds;
+      spots.add(FlSpot(diff.toDouble(), event.value));
       }
      // else {
      //   log ("meh2"); //ZWEIMALIGES AUFRUFEN BEI STOP
      // }
-      spots.add(FlSpot(diff.toDouble(), event.value));
     }
 
     List<LineChartBarData> lineBarsData = [];
@@ -57,18 +58,15 @@ class StreamLineChart extends StatelessWidget {
   Widget build(BuildContext context) {
     if (eventValues.isEmpty) return const Center(child: Text("Waiting for first event..."));
     double latestTimeStampDiff = 0;
-    if (startTimeGetter() != null) {
-      latestTimeStampDiff = eventValues.last.timeStamp.difference(startTimeGetter()).inSeconds.toDouble();
+    if (running) { //TODO FUCK klappt das ?
+      latestTimeStampDiff = eventValues.last.timeStamp.difference(startTime).inSeconds.toDouble();
     }
     else {
       List<FlSpot> historySessionFlSpots = [];
       for (var event in historySessionData) {
-        var diff = -1;
-        if (startTimeGetter() != null) { //TODO FUCK
-          diff = event.timeStamp.difference(startTimeGetter()).inSeconds;
-        }
+        var diff = event.timeStamp.difference(startTime).inSeconds;
         historySessionFlSpots.add(FlSpot(diff.toDouble(), event.value));
-        saveHistorySession(startTimeGetter ,streamType, historySessionFlSpots);
+        saveHistorySession(streamType, historySessionFlSpots);
       }
     }
 

@@ -3,7 +3,8 @@ import 'package:cosinuss/screens/history/widgets/history_listtile.dart';
 import 'package:cosinuss/screens/history/widgets/history_multiselect.dart';
 import 'package:flutter/material.dart';
 
-import '../../database/database.dart';
+import '../../database/exercise_database.dart';
+import '../../database/history_database.dart';
 import '../../dimensions.dart';
 import '../training/models/exercise.dart';
 
@@ -19,16 +20,16 @@ class HistoryState extends State<History> {
   late final _exerciseDB;
   late final _exerciseDao;
 
-  late final _historySessionDB;
-  late final _historySessionDao;
+  late final _historyDatabae;
+  late final _historyDao;
 
   Future<void> _buildDatabase() async {
-      _exerciseDB = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+      _exerciseDB = await $FloorExerciseDatabase.databaseBuilder('exercise_database.db').build();
       _exerciseDao = _exerciseDB.exerciseDao;
       _exercises = await _exerciseDao.findAllExercises();
 
-      _historySessionDB = await $FloorAppDatabase.databaseBuilder('app_historysession.db').build();
-      _historySessionDao = _historySessionDB.historySessionDao;
+      _historyDatabae = await $FloorHistoryDatabase.databaseBuilder('history_database.db').build();
+      _historyDao = _historyDatabae.historyDao;
       setState(() {
       });
   }
@@ -60,7 +61,7 @@ class HistoryState extends State<History> {
         itemBuilder: (context, index) {
           return HistoryListTile(
             exercise: _exercises[index],
-            historySessionDao: _historySessionDao,
+            historySessionDao: _historyDao,
             onLongPress: (int id) {  }, //TODO DELETE OPTION ADDEN
           );
         },
