@@ -28,6 +28,9 @@ class StreamLineChart extends StatelessWidget {
       if (startTimeGetter() != null) {
         diff = event.timeStamp.difference(startTimeGetter()).inSeconds;
       }
+      else {
+        log ("hi");
+      }
       spots.add(FlSpot(diff.toDouble(), event.value));
     }
 
@@ -50,6 +53,10 @@ class StreamLineChart extends StatelessWidget {
     if (startTimeGetter() != null) {
       latestTimeStampDiff = eventValues.last.timeStamp.difference(startTimeGetter()).inSeconds.toDouble();
     }
+    else {
+      log ("hi");
+    }
+
 
     return LineChart(
       LineChartData(

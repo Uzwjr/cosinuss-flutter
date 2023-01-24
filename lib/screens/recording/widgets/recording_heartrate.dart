@@ -51,6 +51,7 @@ class _RecordingHeartRateState<T> extends State<RecordingHeartRate> {
 
   @override
   Widget build(BuildContext context) {
+
     return StreamLineChart(
       startTimeGetter: widget.startTimeGetter,
       eventValues: _data,
@@ -63,6 +64,7 @@ class _RecordingHeartRateState<T> extends State<RecordingHeartRate> {
   @override
   void dispose() {
     _subscription.cancel();
+    log("save");
     super.dispose();
   }
 }

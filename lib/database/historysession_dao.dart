@@ -9,7 +9,7 @@ abstract class HistorySessionDao{
   Future<List<HistorySession>> findAllHistorySessionWithId(int id);
 
   @Query('SELECT * FROM Exercise WHERE id = :id')
-  Stream<HistorySession> findHistorySessionsById(int id);
+  Stream<HistorySession?> findHistorySessionsById(int id);
 
   @insert
   Future<void> insertHistorySession(HistorySession historySession);
