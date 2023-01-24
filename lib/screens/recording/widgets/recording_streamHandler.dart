@@ -13,12 +13,16 @@ class RecordingHeartRate<T> extends StatefulWidget {
       required this.timeRange,
       this.minValue,
       this.maxValue,
-        required this.startTimeGetter})
+        required this.startTimeGetter,
+        required this.saveHistorySession, 
+        required this.streamType})
       : super(key: key);
 
   final Stream<T> stream;
+  final int streamType;
 
   final Function startTimeGetter;
+  final Function saveHistorySession;
   final Duration timeRange;
   final double? minValue;
   final double? maxValue;
@@ -29,6 +33,7 @@ class RecordingHeartRate<T> extends StatefulWidget {
 class _RecordingHeartRateState<T> extends State<RecordingHeartRate> {
   late StreamSubscription<double> _subscription;
   final List<RecordingValue> _data = [];
+  final List<RecordingValue> _historySessionData = [];
 
   @override
   initState() {
@@ -40,12 +45,16 @@ class _RecordingHeartRateState<T> extends State<RecordingHeartRate> {
         _data.removeWhere((element) =>
             element.timeStamp.isBefore(DateTime.now().subtract(widget.timeRange)));
         setState(() {
+          _historySessionData.add(RecordingValue(event, DateTime.now()));
           _data.add(RecordingValue(event, DateTime.now()));
           for (int i = 0; i < _data.length; i++) {
             log(i.toString() + " " + _data[i].value.toString());
           }
         });
       }
+     // else {
+     //   log("meh 1"); PERMANENTES LOG WÄHREND NICHT RECORDED
+     // }
     });
   }
 
@@ -54,10 +63,14 @@ class _RecordingHeartRateState<T> extends State<RecordingHeartRate> {
 
     return StreamLineChart(
       startTimeGetter: widget.startTimeGetter,
+      saveHistorySession: widget.saveHistorySession,
+
       eventValues: _data,
       timeRange: widget.timeRange,
       maxY: widget.maxValue,
       minY: widget.minValue,
+      historySessionData: _historySessionData,
+      streamType: widget.streamType,
     );
   }
 

@@ -10,13 +10,20 @@ class StreamLineChart extends StatelessWidget {
     required this.eventValues,
     required this.timeRange,
     this.maxY,
-    this.minY, required this.startTimeGetter,
+    this.minY,
+    required this.startTimeGetter,
+    required this.saveHistorySession,
+    required this.historySessionData,
+    required this.streamType,
   }) : super(key: key);
   final List<RecordingValue> eventValues;
+  final List<RecordingValue> historySessionData;
   final Duration timeRange;
   final double? maxY;
   final double? minY;
   final Function startTimeGetter;
+  final Function saveHistorySession;
+  final int streamType;
 
   //final List<Color> _colors = const [Colors.red, Colors.blue, Colors.orange];
 
@@ -28,9 +35,9 @@ class StreamLineChart extends StatelessWidget {
       if (startTimeGetter() != null) {
         diff = event.timeStamp.difference(startTimeGetter()).inSeconds;
       }
-      else {
-        log ("hi");
-      }
+     // else {
+     //   log ("meh2"); //ZWEIMALIGES AUFRUFEN BEI STOP
+     // }
       spots.add(FlSpot(diff.toDouble(), event.value));
     }
 
@@ -54,7 +61,15 @@ class StreamLineChart extends StatelessWidget {
       latestTimeStampDiff = eventValues.last.timeStamp.difference(startTimeGetter()).inSeconds.toDouble();
     }
     else {
-      log ("hi");
+      List<FlSpot> historySessionFlSpots = [];
+      for (var event in historySessionData) {
+        var diff = -1;
+        if (startTimeGetter() != null) { //TODO FUCK
+          diff = event.timeStamp.difference(startTimeGetter()).inSeconds;
+        }
+        historySessionFlSpots.add(FlSpot(diff.toDouble(), event.value));
+        saveHistorySession(startTimeGetter ,streamType, historySessionFlSpots);
+      }
     }
 
 

@@ -34,7 +34,7 @@ class ExerciseListTile extends StatelessWidget {
           },
           onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => Recording(name: exercise.name, heartBeatStream: heartBeatStream, temperatureStream: temperatureStream),
+                  builder: (context) => Recording(id: exercise.id, name: exercise.name, heartBeatStream: heartBeatStream, temperatureStream: temperatureStream),
                 ),
               ),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [

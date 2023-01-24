@@ -5,11 +5,13 @@ import 'package:floor/floor.dart';
 @entity
 class HistorySession {
 
-  HistorySession(this.id, this.name, this.flSpotsAsJson);
+  HistorySession(this.id, this.name, this.heartRateFlSpotsAsJson, this.temperatureFlSpotsAsJson);
 
   @primaryKey
   final int id;
 
   final String name;
-  final String flSpotsAsJson;
+
+  String heartRateFlSpotsAsJson;
+  String temperatureFlSpotsAsJson;
 }
